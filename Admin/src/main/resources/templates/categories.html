@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: header}">
+    <style>
+        /* Custom CSS */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #5a5c69;
+            margin: 0;
+        }
+
+        .btn-add-category {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+        }
+
+        .btn-add-category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 115, 223, 0.5);
+            color: white;
+        }
+
+        .custom-alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.4s ease;
+            border-left: 4px solid;
+        }
+
+        .custom-alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .custom-alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .custom-card-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+        }
+
+        .custom-table thead th {
+            background: #f8f9fc;
+            color: #5a5c69;
+            font-weight: 600;
+            border: none;
+            padding: 18px 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .custom-table tbody td {
+            padding: 18px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e3e6f0;
+            color: #5a5c69;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background: #f8f9fc;
+            transform: scale(1.01);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #858796;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .badge-inactive {
+            background: #e2e3e5;
+            color: #6c757d;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #36b9cc;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2c9faf;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(54, 185, 204, 0.4);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74a3b;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c9302c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 74, 59, 0.4);
+            color: white;
+        }
+
+        .btn-enable {
+            background: #1cc88a;
+            color: white;
+        }
+
+        .btn-enable:hover {
+            background: #17a673;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(28, 200, 138, 0.4);
+            color: white;
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 30px 25px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 8px;
+        }
+
+        .form-control-custom {
+            border: 2px solid #e3e6f0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #e3e6f0;
+        }
+
+        .btn-modal {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(78, 115, 223, 0.4);
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+<div id="wrapper">
+    <div th:replace="~{fragments :: sidebar}"></div>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div th:replace="~{fragments :: topbar}"></div>
+
+            <div class="container-fluid">
+
+                <div class="page-header">
+                    <h1 class="page-title">Quản Lý Danh Mục</h1>
+                    <button class="btn-add-category" data-toggle="modal" data-target="#exampleModal">
+                        + Thêm Danh Mục
+                    </button>
+                </div>
+                <div th:if="${failed}" class="custom-alert custom-alert-danger">
+                    <span>✗</span>
+                    <span th:text="${failed}"></span>
+                </div>
+                <div th:if="${success } " class="custom-alert custom-alert-success">
+                    <span>✓</span>
+                    <span th:text="${success}"></span>
+                </div>
+
+
+
+                <div class="card custom-card">
+                    <div class="card-header custom-card-header">
+                        Danh Sách Danh Mục (<span th:text="${size}">0</span>)
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table custom-table mb-0">
+                                <thead>
+                                <tr>
+                                    <th width="10%">#ID</th>
+                                    <th width="40%">Tên Danh Mục</th>
+                                    <th width="20%">Trạng Thái</th>
+                                    <th width="30%">Hành Động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${size == 0}">
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">📦</div>
+                                            <p>Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!</p>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr th:each="category : ${categories}">
+                                    <td th:text="${category.id}">1</td>
+                                    <td th:text="${category.name}">Áo Nam</td>
+                                    <td>
+                                            <span th:if="${category.is_activated}" class="status-badge badge-active">
+                                                Hoạt động
+                                            </span>
+                                        <span th:unless="${category.is_activated}" class="status-badge badge-inactive">
+                                                Tạm ngừng
+                                            </span>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:attr="data-id=${category.id}, data-name=${category.name}"
+                                           class="btn-action btn-edit"
+                                           data-toggle="modal"
+                                           data-target="#editModal"
+                                           onclick="editCategory(this)">
+                                            Sửa
+                                        </a>
+
+                                        <a th:if="${category.is_activated}"
+                                           th:href="@{/delete-category(id=${category.id})}"
+                                           class="btn-action btn-delete"
+                                           onclick="return confirm('Bạn có chắc muốn xóa danh mục này?')">
+                                            Xóa
+                                        </a>
+
+                                        <a th:unless="${category.is_activated}"
+                                           th:href="@{/enable-category(id=${category.id})}"
+                                           class="btn-action btn-enable">
+                                            Kích hoạt
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ADD MODAL -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thêm Danh Mục Mới</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <form th:action="@{/add-category}" method="post" th:object="${categoryNew}">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="form-label">Tên Danh Mục <span class="text-danger">*</span></label>
+                                    <input type="text"
+                                           class="form-control form-control-custom"
+                                           th:field="*{name}"
+                                           placeholder="Nhập tên danh mục..."
+                                           required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-modal btn-cancel" data-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn-modal btn-save">Lưu</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT MODAL -->
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Sửa Danh Mục</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <form th:action="@{/update-category}" method="get">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label class="form-label">ID</label>
+                                    <input type="text" class="form-control form-control-custom" id="idEdit" name="id" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tên Danh Mục <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-custom" id="nameEdit" name="name" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-modal btn-cancel" data-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn-modal btn-save">Cập nhật</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div th:replace="~{fragments :: footer}"></div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: scroll}"></div>
+<div th:replace="~{fragments :: script}"></div>
+
+<script>
+    // Auto hide alerts
+    window.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.custom-alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'all 0.3s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        });
+    });
+
+    // Edit category function
+    function editCategory(element) {
+        const id = element.getAttribute('data-id');
+        const name = element.getAttribute('data-name');
+        document.getElementById('idEdit').value = id;
+        document.getElementById('nameEdit').value = name;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store - Đăng ký</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #2C3E50;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+
+        /* TOP BAR + HEADER */
+        .top-bar {
+            background: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #E74C3C;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* FORM */
+        .section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .auth-box {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+            color: #2C3E50;
+        }
+
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #E74C3C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background: white;
+            color: #E74C3C;
+            border: 2px solid #E74C3C;
+            transform: translateY(-2px);
+        }
+
+        .auth-box p {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .auth-box a {
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        /* ERRORS */
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 60px 5%;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #E74C3C;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: #E74C3C;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar">Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP</div>
+<header class="header">
+    <nav class="navbar">
+        <a th:href="@{/}" class="logo">FASHION</a>
+        <ul class="nav-menu">
+            <li><a th:href="@{/}">Trang chủ</a></li>
+            <li><a th:href="@{/shop}">Cửa hàng</a></li>
+            <li><a th:href="@{/about}">Giới thiệu</a></li>
+            <li><a th:href="@{/contact}">Liên hệ</a></li>
+        </ul>
+        <div class="nav-icons">
+            <div class="icon">🔍</div>
+            <div class="icon">👤</div>
+            <a th:href="@{/cart}" class="icon">🛒</a>
+        </div>
+    </nav>
+</header>
+
+<section class="section">
+    <div class="auth-box">
+        <h2>Đăng Ký</h2>
+        <form th:action="@{/register-new}" th:object="${customerDto}" method="post">
+            <input type="text" th:field="*{firstName}" placeholder="Họ" required>
+            <div class="error-message" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+
+            <input type="text" th:field="*{lastName}" placeholder="Tên" required>
+            <div class="error-message" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+
+            <input type="email" th:field="*{username}" placeholder="Email" required>
+            <div class="error-message" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+
+            <input type="password" th:field="*{password}" placeholder="Mật khẩu" required>
+            <div class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+
+            <input type="password" th:field="*{repeatPassword}" placeholder="Nhập lại mật khẩu" required>
+            <div class="error-message" th:if="${#fields.hasErrors('repeatPassword')}"
+                 th:errors="*{repeatPassword}"></div>
+
+            <button type="submit" class="btn">Đăng ký</button>
+        </form>
+        <p>Bạn đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a></p>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section"><h3>Về chúng tôi</h3>
+            <p>Fashion Store - Điểm đến thời trang tin cậy.</p></div>
+        <div class="footer-section"><h3>Liên hệ</h3>
+            <p>📍 123 Fashion Street</p>
+            <p>📞 0123 456 789</p></div>
+    </div>
+    <div class="footer-bottom">&copy; 2025 Fashion Store. All rights reserved.</div>
+</footer>
+</body>
+</html>

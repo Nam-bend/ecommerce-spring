@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store - Thanh toán</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #2C3E50;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            background: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #E74C3C;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* HERO BANNER */
+        .page-hero {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+            url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 5px 5px 20px rgba(0,0,0,0.9);
+        }
+
+        .breadcrumb {
+            font-size: 16px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* CHECKOUT CONTAINER */
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* BILLING INFO */
+        .billing-info {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #2C3E50;
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h3 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .edit-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 15px;
+            border: 1px solid white;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .edit-link:hover {
+            background: white;
+            color: #2C3E50;
+        }
+
+        .section-body {
+            padding: 30px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #2C3E50;
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 20px 0;
+        }
+
+        /* PAYMENT METHOD */
+        .payment-methods {
+            margin-top: 25px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #E74C3C;
+            background: #fff5f5;
+        }
+
+        .payment-method input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .payment-method label {
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .payment-icon {
+            font-size: 24px;
+        }
+
+        /* ORDER SUMMARY */
+        .order-summary {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 120px;
+        }
+
+        .cart-items {
+            padding: 25px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2C3E50;
+        }
+
+        .item-details {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #E74C3C;
+        }
+
+        /* ORDER TOTALS */
+        .order-totals {
+            padding: 25px;
+            border-top: 2px solid #eee;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .total-row.subtotal {
+            color: #7f8c8d;
+        }
+
+        .total-row.grand-total {
+            font-size: 20px;
+            font-weight: bold;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+            margin-top: 15px;
+            color: #2C3E50;
+        }
+
+        .total-row.grand-total .price {
+            color: #E74C3C;
+        }
+
+        /* PLACE ORDER BUTTON */
+        .place-order-btn {
+            width: 100%;
+            padding: 18px;
+            background: #E74C3C;
+            color: white;
+            border: 2px solid #E74C3C;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .place-order-btn:hover {
+            background: white;
+            color: #E74C3C;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .place-order-btn:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 60px 5%;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #E74C3C;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #E74C3C;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #2C3E50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #E74C3C;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .section-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP
+</div>
+
+<header class="header">
+    <nav class="navbar">
+        <a th:href="@{/}" class="logo">FASHION</a>
+        <ul class="nav-menu">
+            <li><a th:href="@{/index}">Trang chủ</a></li>
+            <li><a th:href="@{/shop}">Cửa hàng</a></li>
+            <li><a th:href="@{/}">Giới thiệu</a></li>
+            <li><a th:href="@{/contact}">Liên hệ</a></li>
+        </ul>
+        <div class="nav-icons">
+            <div class="icon">🔍</div>
+            <div class="icon">👤</div>
+            <div class="icon">🛒</div>
+        </div>
+    </nav>
+</header>
+
+<!-- HERO BANNER -->
+<section class="page-hero">
+    <div class="hero-content">
+        <div class="breadcrumb">
+            <a href="/">Trang chủ</a> / <a href="/cart">Giỏ hàng</a> / <span>Thanh toán</span>
+        </div>
+        <h1>Thanh Toán</h1>
+    </div>
+</section>
+
+<!-- CHECKOUT CONTENT -->
+<section class="section">
+    <form th:action="@{/order}" method="post">
+        <div class="checkout-container">
+            <!-- BILLING INFORMATION -->
+            <div class="billing-info">
+                <div class="section-header">
+                    <h3>📍 Thông Tin Giao Hàng</h3>
+                    <a href="/account" class="edit-link">✏️ Chỉnh sửa</a>
+                </div>
+
+                <div class="section-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Tên khách hàng</span>
+                            <span class="info-value" th:text="${customer.firstName + ' ' + customer.lastName}">Nguyễn Văn A</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Tên đăng nhập</span>
+                            <span class="info-value" th:text="${customer.username}">username</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Số điện thoại</span>
+                            <span class="info-value" th:text="${customer.phoneNumber}">0123456789</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Địa chỉ giao hàng</span>
+                            <span class="info-value" th:text="${customer.address + ', ' + customer.city + ', ' + customer.country}">
+                                123 Đường ABC, Hà Nội, Việt Nam
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- PAYMENT METHOD -->
+                    <h4 style="margin-bottom: 20px; color: #2C3E50;">💳 Phương Thức Thanh Toán</h4>
+
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <input type="radio" id="cod" name="paymentMethod" value="COD" checked required>
+                            <label for="cod">Thanh toán khi nhận hàng (COD)</label>
+                            <span class="payment-icon">💵</span>
+                        </div>
+
+                        <div class="payment-method">
+                            <input type="radio" id="bank" name="paymentMethod" value="BANK" required>
+                            <label for="bank">Chuyển khoản ngân hàng</label>
+                            <span class="payment-icon">🏦</span>
+                        </div>
+
+                        <div class="payment-method">
+                            <input type="radio" id="card" name="paymentMethod" value="CARD" required>
+                            <label for="card">Thẻ tín dụng/Ghi nợ</label>
+                            <span class="payment-icon">💳</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDER SUMMARY -->
+            <div class="order-summary">
+                <div class="section-header">
+                    <h3>🛒 Đơn Hàng Của Bạn</h3>
+                </div>
+
+                <!-- Cart Items -->
+                <div class="cart-items">
+                    <div class="cart-item" th:each="item : ${cart.cartItem}">
+                        <div class="item-image">
+                            <img th:src="@{'/img/' + ${item.product.image}}" th:alt="${item.product.name}">
+                        </div>
+                        <div class="item-info">
+                            <div class="item-name" th:text="${item.product.name}">Tên sản phẩm</div>
+                            <div class="item-details">
+                                <span th:text="'Giá: ' + ${#numbers.formatDecimal(item.product.salePrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">Giá: 299,000 đ</span>
+                                <span> × </span>
+                                <span th:text="'SL: ' + ${item.quantity}">SL: 2</span>
+                            </div>
+                            <div class="item-price" th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                598,000 đ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Totals -->
+                <div class="order-totals">
+                    <div class="total-row subtotal">
+                        <span>Tạm tính:</span>
+                        <span th:text="${#numbers.formatDecimal(cart.totalPrices, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                    </div>
+
+                    <div class="total-row subtotal">
+                        <span>Giảm giá:</span>
+                        <span>0 đ</span>
+                    </div>
+
+                    <div class="total-row subtotal">
+                        <span>Phí vận chuyển:</span>
+                        <span>Miễn phí</span>
+                    </div>
+
+                    <div class="total-row subtotal">
+                        <span>Thuế VAT:</span>
+                        <span>0 đ</span>
+                    </div>
+
+                    <div class="total-row grand-total">
+                        <span>Tổng cộng:</span>
+                        <span class="price" th:text="${#numbers.formatDecimal(cart.totalPrices, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                    </div>
+
+                    <button type="submit" class="place-order-btn">
+                        🎉 Đặt Hàng Ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Về chúng tôi</h3>
+            <p>Điểm đến thời trang tin cậy của bạn với các sản phẩm chất lượng và xu hướng.</p>
+            <div class="social-icons">
+                <div class="social-icon">f</div>
+                <div class="social-icon">📷</div>
+                <div class="social-icon">🐦</div>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Sản phẩm mới</a></li>
+                <li><a href="#">Bán chạy nhất</a></li>
+                <li><a href="#">Khuyến mãi</a></li>
+                <li><a href="#">Thẻ quà tặng</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Dịch vụ khách hàng</h3>
+            <ul>
+                <li><a href="#">Thông tin vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn chọn size</a></li>
+                <li><a href="#">Câu hỏi thường gặp</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên hệ</h3>
+            <p>📍 123 Fashion Street, NY 10001</p>
+            <p>📞 (555) 123-4567</p>
+            <p>✉️ info@fashionstore.com</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Fashion Store. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

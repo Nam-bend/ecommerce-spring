@@ -1,0 +1,509 @@
+    <!DOCTYPE html>
+    <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fashion Store - Cửa hàng</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Arial', sans-serif;
+                color: #2C3E50;
+                line-height: 1.6;
+            }
+
+            /* Header & Navbar - ĐỒNG BỘ VỚI INDEX */
+            .header {
+                background: white;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .top-bar {
+                background: #2C3E50;
+                color: white;
+                padding: 10px 0;
+                text-align: center;
+                font-size: 14px;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 5%;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .logo {
+                font-size: 28px;
+                font-weight: bold;
+                color: #E74C3C;
+                text-decoration: none;
+            }
+
+            .nav-menu {
+                display: flex;
+                list-style: none;
+                gap: 40px;
+            }
+
+            .nav-menu a {
+                text-decoration: none;
+                color: #2C3E50;
+                font-weight: 500;
+                transition: color 0.3s;
+            }
+
+            .nav-menu a:hover,
+            .nav-menu a.active {
+                color: #E74C3C;
+            }
+
+            .nav-icons {
+                display: flex;
+                gap: 25px;
+                align-items: center;
+            }
+
+            .icon {
+                font-size: 20px;
+                cursor: pointer;
+                transition: transform 0.3s;
+            }
+
+            .icon:hover {
+                transform: scale(1.1);
+            }
+
+            /* Hero Banner - ĐỒNG BỘ STYLE */
+            .page-hero {
+                height: 400px;
+                background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                url('https://2885371169.e.cdneverest.net/pub/media/Simiconnector/FW25_bannercategioi-bg-desktop-041025.webp') center/cover;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                text-align: center;
+            }
+
+            .page-hero h1 {
+                font-size: 72px;
+                margin-bottom: 15px;
+                font-weight: 700;
+                text-shadow: 5px 5px 20px rgba(0,0,0,0.9);
+            }
+
+            .page-hero p {
+                font-size: 18px;
+                text-shadow: 4px 4px 16px rgba(0,0,0,0.9);
+            }
+
+            /* Section - ĐỒNG BỘ */
+            .section {
+                padding: 80px 5%;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .section-title {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 50px;
+                color: #2C3E50;
+            }
+
+            /* Category list - STYLE MỚI ĐỒNG BỘ */
+            .category-list {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-bottom: 50px;
+            }
+
+            .category-list a {
+                font-size: 16px;
+                font-weight: 500;
+                color: #2C3E50;
+                text-decoration: none;
+                padding: 12px 30px;
+                border-radius: 5px;
+                transition: all 0.3s;
+                border: 2px solid #2C3E50;
+                background: white;
+            }
+
+            .category-list a:hover {
+                background: #E74C3C;
+                color: white;
+                border-color: #E74C3C;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            }
+
+            /* Product grid - ĐỒNG BỘ HOÀN TOÀN */
+            .products {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 30px;
+            }
+
+            .product-card {
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            }
+
+            .product-image {
+                position: relative;
+                overflow: hidden;
+                height: 350px;
+            }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s;
+            }
+
+            .product-card:hover .product-image img {
+                transform: scale(1.1);
+            }
+
+            .product-actions {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .product-card:hover .product-actions {
+                opacity: 1;
+            }
+
+            .action-btn {
+                background: white;
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 5px;
+                cursor: pointer;
+                transition: all 0.3s;
+                border: none;
+                text-decoration: none;
+                color: #2C3E50;
+            }
+
+            .action-btn:hover {
+                background: #E74C3C;
+                color: white;
+                transform: scale(1.1);
+            }
+
+            .product-info {
+                padding: 20px;
+            }
+
+            .product-info h4 {
+                font-size: 18px;
+                margin-bottom: 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .product-category {
+                font-size: 14px;
+                color: #7f8c8d;
+                margin-bottom: 10px;
+            }
+
+            .product-price {
+                color: #E74C3C;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            /* Promo Banner - ĐỒNG BỘ */
+            .promo-banner {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 60px 5%;
+                text-align: center;
+                margin: 80px 0;
+            }
+
+            .promo-banner h2 {
+                font-size: 42px;
+                margin-bottom: 20px;
+            }
+
+            .promo-banner p {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+
+            .btn {
+                padding: 15px 40px;
+                background: white;
+                color: #2C3E50;
+                border: 2px solid white;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-decoration: none;
+                display: inline-block;
+                border-radius: 5px;
+                font-weight: 500;
+            }
+
+            .btn:hover {
+                background: transparent;
+                color: white;
+                transform: translateY(-2px);
+            }
+
+            /* Footer - ĐỒNG BỘ */
+            .footer {
+                background: #2C3E50;
+                color: white;
+                padding: 60px 5%;
+            }
+
+            .footer-content {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 40px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .footer-section h3 {
+                margin-bottom: 20px;
+                color: #E74C3C;
+            }
+
+            .footer-section ul {
+                list-style: none;
+            }
+
+            .footer-section ul li {
+                margin-bottom: 10px;
+            }
+
+            .footer-section a {
+                color: white;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+            .footer-section a:hover {
+                color: #E74C3C;
+            }
+
+            .social-icons {
+                display: flex;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                background: white;
+                color: #2C3E50;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .social-icon:hover {
+                background: #E74C3C;
+                color: white;
+                transform: translateY(-3px);
+            }
+
+            .footer-bottom {
+                text-align: center;
+                margin-top: 40px;
+                padding-top: 30px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+
+            @media (max-width: 768px) {
+                .nav-menu {
+                    display: none;
+                }
+
+                .page-hero h1 {
+                    font-size: 36px;
+                }
+
+                .section-title {
+                    font-size: 28px;
+                }
+
+                .page-hero {
+                    height: 300px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+    <div class="top-bar">
+        Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP
+    </div>
+
+    <header class="header">
+        <nav class="navbar">
+            <a th:href="@{/index}" class="logo">FASHION</a>
+            <ul class="nav-menu">
+                <li><a th:href="@{/index}" class="nav-link">Trang chủ</a></li>
+                <li><a th:href="@{/shop}" class="active">Cửa hàng</a></li>
+                <li><a th:href="@{/}">Giới thiệu</a></li>
+                <li><a href="/contact">Liên hệ</a></li>
+            </ul>
+            <div class="nav-icons">
+                <div class="icon">🔍</div>
+                <div class="icon">👤</div>
+                <a th:href="@{/cart}" style="text-decoration: none; color: inherit;">
+                    <div class="icon">
+                        🛒
+                        <span class="cart-badge" th:if="${session.totalItems != null}"
+                              th:text="${session.totalItems}">0</span>
+                    </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="page-hero">
+        <div>
+            <h1>Cửa Hàng</h1>
+            <p>Khám phá bộ sưu tập mới nhất</p>
+        </div>
+    </section>
+
+    <!-- Category -->
+    <section class="section">
+        <h2 class="section-title">Danh Mục Sản Phẩm</h2>
+        <div class="category-list">
+            <a th:each="category : ${categories}"
+               th:href="@{/products-in-category/{id}(id=${category.id})}"
+               th:text="${category.name}">Áo Nam</a>
+            <a href="#">Áo Nữ</a>
+            <a href="#">Quần Jean</a>
+            <a href="#">Váy Đầm</a>
+            <a href="#">Phụ Kiện</a>
+            <a href="#">Giày Dép</a>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="section">
+        <h2 class="section-title">Tất Cả Sản Phẩm</h2>
+        <div class="products">
+            <div class="product-card" th:each="product : ${products}">
+                <div class="product-image">
+                    <img th:src="@{'/img/' + ${product.image}}" th:alt="${product.name}">
+                    <div class="product-actions">
+                        <a th:href="@{/find-product/{id}(id=${product.id})}" class="action-btn" title="Xem chi tiết">👁</a>
+                        <button class="action-btn" title="Thêm vào giỏ">🛒</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="product-category" th:text="${product.category.name}">Áo thun</div>
+                    <h4 th:text="${product.name}">Áo Thun Basic Trắng</h4>
+                    <div class="product-price" th:text="${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">299,000 đ</div>
+                </div>
+            </div>
+
+            <!-- Sample products khi không có dữ liệu -->
+
+
+
+
+
+
+
+
+
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner">
+        <h2>Giảm giá mùa hè - Lên đến 50%</h2>
+        <p>Ưu đãi có thời hạn cho các sản phẩm được chọn</p>
+        <a href="#" class="btn">Mua ngay</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Về chúng tôi</h3>
+                <p>Điểm đến thời trang tin cậy của bạn với các sản phẩm chất lượng và xu hướng.</p>
+                <div class="social-icons">
+                    <div class="social-icon">f</div>
+                    <div class="social-icon">📷</div>
+                    <div class="social-icon">🐦</div>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Liên kết nhanh</h3>
+                <ul>
+                    <li><a href="#">Sản phẩm mới</a></li>
+                    <li><a href="#">Bán chạy nhất</a></li>
+                    <li><a href="#">Khuyến mãi</a></li>
+                    <li><a href="#">Thẻ quà tặng</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Dịch vụ khách hàng</h3>
+                <ul>
+                    <li><a href="#">Thông tin vận chuyển</a></li>
+                    <li><a href="#">Chính sách đổi trả</a></li>
+                    <li><a href="#">Hướng dẫn chọn size</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Liên hệ</h3>
+                <p>📍 123 Fashion Street, NY 10001</p>
+                <p>📞 (555) 123-4567</p>
+                <p>✉️ info@fashionstore.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Fashion Store. All rights reserved.</p>
+        </div>
+    </footer>
+    </body>
+    </html>

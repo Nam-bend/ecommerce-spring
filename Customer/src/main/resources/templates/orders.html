@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store - Đơn hàng của tôi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #2C3E50;
+            line-height: 1.6;
+            background: #f8f9fa;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            background: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #E74C3C;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E74C3C;
+            color: white;
+            font-size: 11px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+
+        /* HERO BANNER */
+        .page-hero {
+            position: relative;
+            height: 350px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+            url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1200') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 5px 5px 20px rgba(0,0,0,0.9);
+        }
+
+        .breadcrumb {
+            font-size: 16px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* SECTION */
+        .section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ALERT */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            text-align: center;
+        }
+
+        /* FILTER TABS */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2C3E50;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: #E74C3C;
+            color: white;
+            border-color: #E74C3C;
+            transform: translateY(-2px);
+        }
+
+        /* ORDER CARDS */
+        .orders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
+
+        .order-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .order-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .order-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .order-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2C3E50;
+        }
+
+        .order-status {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-shipping {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-body {
+            padding: 25px 30px;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .order-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2C3E50;
+            font-weight: 600;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .order-total {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .total-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: 2px solid;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-danger {
+            background: white;
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2C3E50;
+            border-color: #2C3E50;
+        }
+
+        .btn-secondary:hover {
+            background: #2C3E50;
+            color: white;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #2C3E50;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background: #E74C3C;
+            color: white;
+            border-color: #E74C3C;
+        }
+
+        .btn-primary:hover {
+            background: white;
+            color: #E74C3C;
+            transform: translateY(-2px);
+        }
+
+        /* FOOTER */
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 60px 5%;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #E74C3C;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #E74C3C;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #2C3E50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #E74C3C;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .order-header {
+                grid-template-columns: 1fr;
+            }
+
+            .order-footer {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .order-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .filter-tabs {
+                gap: 10px;
+            }
+
+            .tab-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .order-summary {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP
+</div>
+
+<header class="header">
+    <nav class="navbar">
+        <a th:href="@{/index}" class="logo">FASHION</a>
+        <ul class="nav-menu">
+            <li><a th:href="@{/index}">Trang chủ</a></li>
+            <li><a th:href="@{/shop}">Cửa hàng</a></li>
+            <li><a href="/about">Giới thiệu</a></li>
+            <li><a href="/contact">Liên hệ</a></li>
+        </ul>
+        <div class="nav-icons">
+            <div class="icon">🔍</div>
+            <div class="icon">👤</div>
+            <a th:href="@{/cart}" style="text-decoration: none; color: inherit;">
+                <div class="icon">
+                    🛒
+                    <span class="cart-badge" th:if="${session.totalItems != null}"
+                          th:text="${session.totalItems}">0</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+</header>
+
+<!-- HERO BANNER -->
+<section class="page-hero">
+    <div class="hero-content">
+        <div class="breadcrumb">
+            <a th:href="@{/index}">Trang chủ</a> / <span>Đơn hàng của tôi</span>
+        </div>
+        <h1>Đơn Hàng Của Tôi</h1>
+    </div>
+</section>
+
+<!-- ORDERS SECTION -->
+<section class="section">
+    <!-- Success Message -->
+    <div th:if="${success}" class="alert alert-success">
+        ✓ <span th:text="${success}"></span>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="tab-btn active" onclick="filterOrders('all')">Tất cả</button>
+        <button class="tab-btn" onclick="filterOrders('pending')">Chờ xác nhận</button>
+        <button class="tab-btn" onclick="filterOrders('shipping')">Đang giao</button>
+        <button class="tab-btn" onclick="filterOrders('completed')">Hoàn thành</button>
+        <button class="tab-btn" onclick="filterOrders('cancelled')">Đã hủy</button>
+    </div>
+
+    <!-- Orders Container -->
+    <div class="orders-container" th:if="${orders != null and !orders.empty}">
+        <!-- Order Card -->
+        <div class="order-card" th:each="order : ${orders}"
+             th:data-status="${order.status != null ? order.status.toLowerCase() : 'pending'}">
+            <div class="order-header">
+                <div class="order-info-item">
+                    <span class="order-label">Mã đơn hàng</span>
+                    <span class="order-value" th:text="'#' + ${order.id}"></span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-label">Ngày đặt</span>
+                    <span class="order-value" th:text="${order.orderDate}"></span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-label">Ngày giao dự kiến</span>
+                    <span class="order-value"
+                          th:text="${order.deliveryDate != null ? order.deliveryDate : 'Đang chờ xác nhận'}"></span>
+                </div>
+                <div class="order-info-item">
+                    <span class="order-label">Trạng thái</span>
+                    <span class="order-status"
+                          th:classappend="${order.status == 'Completed' ? 'status-completed' : (order.status == 'Pending' ? 'status-pending' : (order.status == 'Shipping' ? 'status-shipping' : 'status-cancelled'))}"
+                          th:text="${order.status != null ? order.status : 'Pending'}"></span>
+                </div>
+            </div>
+
+            <div class="order-body">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <div class="order-details">
+<!--                        <div class="detail-row">-->
+<!--                            <span class="detail-label">Số lượng sản phẩm:</span>-->
+<!--                            <span class="detail-value" th:text="${order.quantity}"></span>-->
+<!--                        </div>-->
+                        <div class="detail-row">
+                            <span class="detail-label">Phương thức thanh toán:</span>
+                            <span class="detail-value" th:text="${order.paymentMethod}"></span>
+                        </div>
+                    </div>
+                    <div class="order-total">
+                        <span class="total-label">Tổng thanh toán:</span>
+                        <span class="total-value" th:text="${order.totalPrice}"></span>
+                    </div>
+                </div>
+
+                <!-- Order Footer -->
+                <div class="order-footer">
+                    <div style="font-size: 14px; color: #7f8c8d;">
+                        <span th:if="${order.status == 'Pending'}">⏳ Đơn hàng đang chờ xác nhận</span>
+                        <span th:if="${order.status == 'Shipping'}">🚚 Đơn hàng đang được giao</span>
+                        <span th:if="${order.status == 'Completed'}">✅ Đơn hàng đã hoàn thành</span>
+                        <span th:if="${order.status == 'Cancelled'}">❌ Đơn hàng đã bị hủy</span>
+                    </div>
+                    <div class="order-actions">
+                        <a th:href="@{/order-detail/{id}(id=${order.id})}" class="btn btn-secondary">
+                            Xem chi tiết
+                        </a>
+                        <a th:href="@{/cancel-order/{id}(id=${order.id})}"
+                           class="btn btn-danger"
+                           th:if="${order.status != 'Cancelled'}"
+                           onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                            Hủy đơn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${orders == null or orders.empty}">
+        <div class="empty-icon">📦</div>
+        <h2>Chưa có đơn hàng nào</h2>
+        <p>Bạn chưa có đơn hàng nào. Hãy khám phá và mua sắm ngay!</p>
+        <a th:href="@{/shop}" class="btn btn-primary">Mua sắm ngay</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Về chúng tôi</h3>
+            <p>Điểm đến thời trang tin cậy của bạn với các sản phẩm chất lượng và xu hướng.</p>
+            <div class="social-icons">
+                <div class="social-icon">f</div>
+                <div class="social-icon">📷</div>
+                <div class="social-icon">🐦</div>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Sản phẩm mới</a></li>
+                <li><a href="#">Bán chạy nhất</a></li>
+                <li><a href="#">Khuyến mãi</a></li>
+                <li><a href="#">Thẻ quà tặng</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Dịch vụ khách hàng</h3>
+            <ul>
+                <li><a href="#">Thông tin vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn chọn size</a></li>
+                <li><a href="#">Câu hỏi thường gặp</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên hệ</h3>
+            <p>📍 123 Fashion Street, NY 10001</p>
+            <p>📞 (555) 123-4567</p>
+            <p>✉️ info@fashionstore.com</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Fashion Store. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Filter orders by status
+    function filterOrders(status) {
+        const orders = document.querySelectorAll('.order-card');
+        const tabs = document.querySelectorAll('.tab-btn');
+
+        // Update active tab
+        tabs.forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // Filter orders
+        orders.forEach(order => {
+            if (status === 'all') {
+                order.style.display = 'block';
+            } else {
+                const orderStatus = order.dataset.status;
+                order.style.display = orderStatus === status ? 'block' : 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

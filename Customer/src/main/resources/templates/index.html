@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store - Trang chủ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #2C3E50;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            background: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #E74C3C;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .icon {
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* CART BADGE */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E74C3C;
+            color: white;
+            font-size: 11px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+
+        /* HERO SLIDER - ĐÃ SỬA HOÀN TOÀN */
+        .hero-slider {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /*padding: 0 8%; !* THÊM PADDING 2 BÊN *!*/
+            will-change: opacity, transform;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .slide-content {
+            max-width: 600px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide.active .slide-content {
+            animation: slideInLeft 1s ease-out;
+        }
+
+        /* H1 - ĐÃ SỬA */
+        .slide-content h1 {
+            font-size: 52px; /* GIẢM TỪ 72px */
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.2; /* TĂNG TỪ 1.1 */
+            text-shadow: 5px 5px 20px rgba(0,0,0,0.9);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .slide-content .highlight {
+            font-weight: 900;
+            display: inline-block; /* ĐỔI TỪ block */
+            color: #FF4444;
+            text-transform: uppercase;
+            margin-left: 10px; /* THÊM KHOẢNG CÁCH */
+        }
+
+        .slide-content p {
+            font-size: 17px;
+            margin-bottom: 30px;
+            font-weight: 400;
+            text-shadow: 4px 4px 16px rgba(0,0,0,0.9);
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: white;
+            color: #2C3E50;
+            border: 2px solid white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .slider-arrow {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            border-radius: 5px;
+        }
+
+        .slider-arrow:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #2C3E50;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .category-card {
+            position: relative;
+            height: 350px;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 30px;
+            color: white;
+        }
+
+        .category-overlay h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-actions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .product-card:hover .product-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .action-btn:hover {
+            background: #E74C3C;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product-category {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: #E74C3C;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 5%;
+            text-align: center;
+            margin: 80px 0;
+        }
+
+        .promo-banner h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .promo-banner p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 60px 5%;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #E74C3C;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #E74C3C;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #2C3E50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #E74C3C;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .slide-content h1 {
+                font-size: 44px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .slide {
+                padding: 0 5%;
+            }
+
+            .slide-content h1 {
+                font-size: 32px;
+            }
+
+            .slide-content p {
+                font-size: 15px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .slider-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .hero-slider {
+                height: 450px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide-content h1 {
+                font-size: 26px;
+            }
+
+            .slide-content .highlight {
+                margin-left: 0;
+                display: block;
+            }
+
+            .slide-content p {
+                font-size: 14px;
+            }
+
+            .hero-slider {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="top-bar">
+    Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP
+</div>
+
+<header class="header">
+    <nav class="navbar">
+        <a th:href="@{/index}" class="logo">FASHION</a>
+        <ul class="nav-menu">
+            <li><a th:href="@{/index}" class="active">Trang chủ</a></li>
+            <li><a th:href="@{/shop}">Cửa hàng</a></li>
+            <li><a th:href="@{/}">Giới thiệu</a></li>
+            <li><a th:href="@{/contact}">Liên hệ</a></li>
+        <div class="nav-icons">
+            <div class="icon">🔍</div>
+            <div class="icon">👤</div>
+            <a th:href="@{/cart}" style="text-decoration: none; color: inherit;">
+                <div class="icon">
+                    🛒
+                    <span class="cart-badge" th:if="${session.totalItems != null}"
+                          th:text="${session.totalItems}">0</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+</header>
+
+<section class="hero-slider">
+    <!-- SỬA: Thêm class="active" vào slide đầu tiên -->
+    <div class="slide active">
+        <img class="slide-bg" src="https://2885371169.e.cdneverest.net/pub/media/Simiconnector/BannerSlider/f/w/fw25_topbanner_desktop-041025.webp"
+             alt="Fashion" loading="lazy">
+        <div class="slide-content">
+            <h1>Bộ Sưu Tập <span class="highlight">Xuân 2025</span></h1>
+            <p>Khám phá xu hướng thời trang mới nhất với thiết kế tinh tế và hiện đại</p>
+            <a th:href="@{/shop}" class="btn">Mua ngay</a>
+        </div>
+    </div>
+
+    <div class="slide">
+        <img class="slide-bg" src="https://2885371169.e.cdneverest.net/pub/media/Simiconnector/BannerSlider/c/t/ctcc_topbanner_desktop-170925.webp"
+             alt="Zen Casual" loading="lazy">
+        <div class="slide-content">
+            <h1><span class="highlight">Zen Casual</span> Chuẩn Tết</h1>
+            <p>Hiện đại tinh tế đơn giản - Phong cách Việt Nam rực rỡ</p>
+            <a th:href="@{/shop}" class="btn">Khám phá</a>
+        </div>
+    </div>
+
+    <div class="slide">
+        <img class="slide-bg" src="https://2885371169.e.cdneverest.net/pub/media/Simiconnector/BannerSlider/l/e/lencasual_topbanner_desktop-021025.webp"
+             alt="Sale" loading="lazy">
+        <div class="slide-content">
+            <h1>Giảm Giá <span class="highlight">Lên đến 50%</span></h1>
+            <p>Ưu đãi đặc biệt cho thành viên mới - Cơ hội vàng cho bạn!</p>
+            <a th:href="@{/shop}" class="btn">Mua sắm ngay</a>
+        </div>
+    </div>
+
+    <div class="slide">
+        <img class="slide-bg" src="https://2885371169.e.cdneverest.net/pub/media/Simiconnector/BannerSlider/h/o/homewear_topbanner_desktop-031025.webp"
+             alt="Accessories" loading="lazy">
+        <div class="slide-content">
+            <h1>Phụ Kiện <span class="highlight">Thời Thượng</span></h1>
+            <p>Hoàn thiện phong cách của bạn với các món đồ hot trend</p>
+            <a th:href="@{/shop}" class="btn">Xem thêm</a>
+        </div>
+    </div>
+
+    <div class="slider-nav">
+        <button class="slider-arrow prev" onclick="changeSlide(-1)">‹</button>
+        <button class="slider-arrow next" onclick="changeSlide(1)">›</button>
+    </div>
+
+    <div class="slider-dots">
+        <span class="dot active" onclick="goToSlide(0)"></span>
+        <span class="dot" onclick="goToSlide(1)"></span>
+        <span class="dot" onclick="goToSlide(2)"></span>
+        <span class="dot" onclick="goToSlide(3)"></span>
+    </div>
+</section>
+
+<section class="section">
+    <h2 class="section-title">Danh Mục Sản Phẩm</h2>
+    <div class="categories">
+        <div class="category-card" th:each="category : ${categories}">
+            <img src="https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=600" th:alt="${category.name}">
+            <div class="category-overlay">
+                <h3 th:text="${category.name}">Danh mục</h3>
+                <p>Khám phá ngay →</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="shop">
+    <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+    <div class="products">
+        <div class="product-card" th:each="product : ${products}">
+            <div class="product-image">
+                <img th:src="@{'/img/' + ${product.image}}" th:alt="${product.name}">
+                <div class="product-actions">
+                    <a th:href="@{/find-product/{id}(id=${product.id})}"
+                       class="action-btn"
+                       title="Xem chi tiết">👁</a>
+                    <button class="action-btn" title="Thêm vào giỏ">🛒</button>
+                </div>
+            </div>
+            <div class="product-info">
+                <div class="product-category" th:text="${product.category.name}">Danh mục</div>
+                <h4 th:text="${product.name}">Tên sản phẩm</h4>
+                <div class="product-price" th:text="${#numbers.formatDecimal(product.salePrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="promo-banner">
+    <h2>Giảm giá mùa hè - Lên đến 50%</h2>
+    <p>Ưu đãi có thời hạn cho các sản phẩm được chọn</p>
+    <a th:href="@{/shop}" class="btn">Mua ngay</a>
+</section>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Về chúng tôi</h3>
+            <p>Điểm đến thời trang tin cậy của bạn với các sản phẩm chất lượng và xu hướng.</p>
+            <div class="social-icons">
+                <div class="social-icon">f</div>
+                <div class="social-icon">📷</div>
+                <div class="social-icon">🐦</div>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Sản phẩm mới</a></li>
+                <li><a href="#">Bán chạy nhất</a></li>
+                <li><a href="#">Khuyến mãi</a></li>
+                <li><a href="#">Thẻ quà tặng</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Dịch vụ khách hàng</h3>
+            <ul>
+                <li><a href="#">Thông tin vận chuyển</a></li>
+                <li><a href="#">Chính sách đổi trả</a></li>
+                <li><a href="#">Hướng dẫn chọn size</a></li>
+                <li><a href="#">Câu hỏi thường gặp</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên hệ</h3>
+            <p>📍 123 Fashion Street, NY 10001</p>
+            <p>📞 (555) 123-4567</p>
+            <p>✉️ info@fashionstore.com</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Fashion Store. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    let autoSlideInterval;
+
+    function showSlide(n) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        currentSlide = (n + slides.length) % slides.length;
+
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+    }
+
+    function changeSlide(direction) {
+        showSlide(currentSlide + direction);
+        resetAutoSlide();
+    }
+
+    function goToSlide(n) {
+        showSlide(n);
+        resetAutoSlide();
+    }
+
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+    }
+
+    // Auto start
+    resetAutoSlide();
+</script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Store - Trang chủ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2C3E50;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .top-bar {
+            background: #2C3E50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #E74C3C;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #2C3E50;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #E74C3C;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .icon {
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .page-hero {
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+            url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: fadeInUp 1s;
+        }
+
+        .page-hero p {
+            font-size: 18px;
+            animation: fadeInUp 1.2s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* About Main Section */
+        .about-main {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .about-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #2C3E50;
+        }
+
+        .about-content h2 span {
+            color: #E74C3C;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .btn-primary {
+            padding: 15px 40px;
+            background: #E74C3C;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background: #C0392B;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 80px 5%;
+            background: #f8f9fa;
+        }
+
+        .services-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2C3E50;
+        }
+
+        .service-card p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        /* Instagram Feed */
+        .instagram-section {
+            background: white;
+            padding: 60px 5%;
+            text-align: center;
+        }
+
+        .instagram-section h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #2C3E50;
+        }
+
+        .instagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .instagram-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .instagram-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .instagram-item:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2C3E50;
+            color: white;
+            padding: 60px 5%;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #E74C3C;
+            font-size: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #E74C3C;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #2C3E50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: #E74C3C;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-hero h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Top Bar -->
+<div class="top-bar">
+    Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP
+</div>
+
+<!-- Header -->
+<header class="header">
+    <nav class="navbar">
+        <a th:href="@{/index}" class="logo">FASHION STORE</a>
+        <ul class="nav-menu">
+            <li><a th:href="@{/index}">Trang chủ</a></li>
+            <li><a th:href="@{/shop}">Cửa hàng</a></li>
+            <li><a th:href="@{/}">Giới thiệu</a></li>
+            <li><a th:href="@{/contact}">Liên hệ</a></li>
+        </ul>
+        <div class="nav-icons">
+            <span class="icon">🔍</span>
+            <a th:href="@{/login}" class="icon">👤</a>
+
+            <a th:href="@{/cart}" class="icon">🛒</a>
+        </div>
+    </nav>
+</header>
+
+<!-- Page Hero -->
+<section class="page-hero">
+    <div>
+        <h1>Giới thiệu về cửa hàng</h1>
+        <p>Khám phá câu chuyện đằng sau Fashion Store</p>
+    </div>
+</section>
+
+
+<!-- About Main Section -->
+<div class="about-main">
+    <div class="about-grid">
+        <div class="about-image">
+            <img th:src="@{/img/Intro.png}" alt="Store Introduction">
+        </div>
+        <div class="about-content">
+            <h2>Chúng tôi là <span>Fashion Store</span></h2>
+            <p>Fashion là đam mê và công việc duy nhất của chúng tôi. Với nhiều năm trong ngành, chúng tôi biết cách mang đến sản phẩm tốt nhất.</p>
+            <p>Fashion Store chỉ hợp tác với các nhà cung cấp uy tín. Chúng tôi mang đến sản phẩm chất lượng mà chính chúng tôi cũng sẽ sử dụng.</p>
+            <p>Tại Fashion Store, bạn được trải nghiệm hành trình mua sắm độc đáo với các bộ sưu tập mới nhất.</p>
+            <p>Bộ sưu tập đa dạng từ áo sơ mi, váy, phụ kiện... Chúng tôi mang đến nhiều hơn cả sản phẩm: đó là trải nghiệm.</p>
+            <a th:href="@{/shop}" class="btn-primary">Xem sản phẩm</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- Services Section -->
+<div class="services-section">
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">🏆</div>
+            <h3>Đáng tin cậy</h3>
+            <p>Fashion Store hợp tác với đối tác uy tín, mang đến sản phẩm chất lượng cao.</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">💼</div>
+            <h3>Chuyên nghiệp</h3>
+            <p>Chúng tôi tạo ra trải nghiệm mua sắm tuyệt vời, không chỉ đơn thuần là sản phẩm.</p>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">⭐</div>
+            <h3>Chuyên gia</h3>
+            <p>Nhiều năm kinh nghiệm trong ngành thời trang, bộ sưu tập của chúng tôi vừa cổ điển vừa hiện đại.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Instagram Feed -->
+<section class="instagram-section">
+    <h2>Theo dõi chúng tôi trên Instagram</h2>
+    <div class="instagram-grid">
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400" alt="Instagram">
+        </div>
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=400" alt="Instagram">
+        </div>
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400" alt="Instagram">
+        </div>
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400" alt="Instagram">
+        </div>
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400" alt="Instagram">
+        </div>
+        <div class="instagram-item">
+            <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400" alt="Instagram">
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Về chúng tôi</h3>
+            <p>Fashion Store - Điểm đến thời trang uy tín của bạn.</p>
+            <div class="social-icons">
+                <div class="social-icon">f</div>
+                <div class="social-icon">📷</div>
+                <div class="social-icon">🐦</div>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h3>Liên kết nhanh</h3>
+            <ul>
+                <li><a href="#">Sản phẩm mới</a></li>
+                <li><a href="#">Bán chạy</a></li>
+                <li><a href="#">Khuyến mãi</a></li>
+                <li><a href="#">Thẻ quà tặng</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Dịch vụ khách hàng</h3>
+            <ul>
+                <li><a href="#">Vận chuyển</a></li>
+                <li><a href="#">Đổi trả</a></li>
+                <li><a href="#">Hướng dẫn chọn size</a></li>
+                <li><a href="#">Câu hỏi thường gặp</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Liên hệ</h3>
+            <p>📍 123 Fashion Street, Hà Nội</p>
+            <p>📞 0123-456-789</p>
+            <p>✉️ support@fashionstore.com</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Fashion Store. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
