@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import org.example.library.entity.*;
 import org.example.library.repository.OrderRepository;
 import org.example.library.service.OrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -67,6 +70,33 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Order order) {
         order.setStatus("Cancelled"); // cập nhật trạng thái
         orderRepository.save(order);  // lưu lại vào DB
+    }
+
+    //admin
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public void save(Order order) {
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrderById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Order> getAllOrdersPageable(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Order> searchOrders(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findByIdContainingOrCustomerNameContaining(keyword, pageable);
     }
 
 }

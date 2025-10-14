@@ -466,7 +466,7 @@
 
 <header class="header">
     <nav class="navbar">
-        <a th:href="@{/}" class="logo">FASHION</a>
+        <a th:href="@{/}" class="logo">CANIFA</a>
         <ul class="nav-menu">
             <li><a th:href="@{/index}">Trang chủ</a></li>
             <li><a th:href="@{/shop}">Cửa hàng</a></li>
@@ -485,7 +485,7 @@
 <section class="page-hero">
     <div class="hero-content">
         <div class="breadcrumb">
-            <a href="/">Trang chủ</a> / <a href="/cart">Giỏ hàng</a> / <span>Thanh toán</span>
+            <a th:href="@{/index}">Trang chủ</a> / <a th:href="@{/cart}">Giỏ hàng</a> / <span>Thanh toán</span>
         </div>
         <h1>Thanh Toán</h1>
     </div>
@@ -499,7 +499,7 @@
             <div class="billing-info">
                 <div class="section-header">
                     <h3>📍 Thông Tin Giao Hàng</h3>
-                    <a href="/account" class="edit-link">✏️ Chỉnh sửa</a>
+                    <a th:href="@{/account}" class="edit-link">✏️ Chỉnh sửa</a>
                 </div>
 
                 <div class="section-body">

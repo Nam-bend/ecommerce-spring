@@ -545,7 +545,7 @@
 
 <header class="header">
     <nav class="navbar">
-        <a  th:href="@{/index}" class="logo">FASHION</a>
+        <a  th:href="@{/index}" class="logo">CANIFA</a>
         <ul class="nav-menu">
             <li><a th:href="@{/index}">Trang chủ</a></li>
             <li><a th:href="@{/shop}">Cửa hàng</a></li>
@@ -570,7 +570,7 @@
 <section class="page-hero">
     <div class="hero-content">
         <div class="breadcrumb">
-            <a href="/">Trang chủ</a> / <span>Giỏ hàng</span>
+            <a th:href="@{/index}">Trang chủ</a> / <span>Giỏ hàng</span>
         </div>
         <h1>Giỏ Hàng Của Bạn</h1>
     </div>
@@ -583,7 +583,7 @@
         <div class="empty-cart-icon">🛒</div>
         <h2 th:text="${check}">Giỏ hàng trống</h2>
         <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
-        <a href="/shop" class="btn">Tiếp tục mua sắm</a>
+        <a th:href="@{/shop}" class="btn">Tiếp tục mua sắm</a>
     </div>
 
     <!-- Cart with Items -->
@@ -671,7 +671,7 @@
             </div>
 
             <a th:href="@{/check-out}" class="checkout-btn">Thanh toán</a>
-            <a href="/shop" class="continue-shopping">Tiếp tục mua sắm</a>
+            <a th:href="@{/shop}" class="continue-shopping">Tiếp tục mua sắm</a>
         </div>
     </div>
 </section>
