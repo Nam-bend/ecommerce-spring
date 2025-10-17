@@ -466,7 +466,7 @@
 
 <header class="header">
     <nav class="navbar">
-        <a th:href="@{/}" class="logo">CANIFA</a>
+        <a th:href="@{/index}" class="logo">CANIFA</a>
         <ul class="nav-menu">
             <li><a th:href="@{/index}">Trang chủ</a></li>
             <li><a th:href="@{/shop}">Cửa hàng</a></li>
@@ -476,7 +476,13 @@
         <div class="nav-icons">
             <div class="icon">🔍</div>
             <div class="icon">👤</div>
-            <div class="icon">🛒</div>
+            <a th:href="@{/cart}" style="text-decoration: none; color: inherit;">
+                <div class="icon">
+                    🛒
+                    <span class="cart-badge" th:if="${session.totalItems != null}"
+                          th:text="${session.totalItems}">0</span>
+                </div>
+            </a>
         </div>
     </nav>
 </header>

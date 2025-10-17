@@ -66,20 +66,16 @@ public class LoginController {
                 model.addAttribute("adminDto", adminDto);
                 return "register";
             }
-
             // 2. Kiểm tra username/email đã tồn tại
             if (adminService.existsByUsername(adminDto.getUsername())) {
                 session.setAttribute("message", "Email hoặc username đã tồn tại!");
                 return "redirect:/register";
             }
-
             // 3. Kiểm tra password và repeatPassword khớp
             if (adminDto.getPassword() == null || !adminDto.getPassword().equals(adminDto.getRepeatPassword())) {
                 session.setAttribute("message", "Mật khẩu không khớp!");
                 return "redirect:/register";
             }
-//           adminDto.setPassword(passwordEncoder.encode(adminDto.getPassword()));
-
             // 5 Lưu admin mới
             adminService.save(adminDto);
 

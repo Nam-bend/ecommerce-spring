@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.List;
@@ -42,23 +43,18 @@ public class OrderController {
                 || customer.getAddress() == null || customer.getAddress().trim().isEmpty()
                 || customer.getCity() == null || customer.getCity().trim().isEmpty()
                 || customer.getCountry() == null || customer.getCountry().trim().isEmpty()) {
-
-
             model.addAttribute("customer", customer);
             return "redirect:/account"; // ← REDIRECT, không phải return "account"
         }
         // 3. Lấy giỏ hàng
         ShoppingCart cart = customer.getShoppingCart();
-
         // 4. Kiểm tra giỏ hàng có sản phẩm không
         if (cart == null || cart.getCartItem() == null || cart.getCartItem().isEmpty()) {
             return "redirect:/cart"; // ← Giỏ hàng trống
         }
-
         // 5. Truyền dữ liệu vào view
         model.addAttribute("customer", customer);
         model.addAttribute("cart", cart); // ← THÊM cart vào model
-
         // 6. Hiển thị trang checkout
         return "checkout";
     }
@@ -113,7 +109,7 @@ public class OrderController {
     }
 
     @PostMapping("/cancel-order/{id}")
-    public String cancelOrder(@PathVariable("id") Long id, Principal principal) {
+    public String cancelOrder(@PathVariable("id") Long id, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -121,17 +117,18 @@ public class OrderController {
         Customer customer = customerService.findByUsername(principal.getName());
         Order order = orderService.getOrderById(id);
 
-        //  Chỉ cho phép hủy đơn của chính mình
+
         if (!order.getCustomer().getId().equals(customer.getId())) {
-            return "redirect:/orders?error=not_allowed";
+            redirectAttributes.addFlashAttribute("error", "Bạn không được phép hủy đơn hàng này 😠");
+            return "redirect:/orders";
         }
 
-        //  Cập nhật trạng thái
+        // 🔄 Cập nhật trạng thái
         orderService.cancelOrder(order);
 
-        return "redirect:/orders?success=Đơn hàng #" + id + " đã được hủy";
+        // ✅ Gửi thông báo flash về trang /orders
+        redirectAttributes.addFlashAttribute("success", "Đơn hàng #" + id + " đã được hủy 😏");
+
+        return "redirect:/orders";
     }
-
-
-
 }

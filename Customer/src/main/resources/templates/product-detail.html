@@ -598,9 +598,25 @@
                 grid-template-columns: 1fr;
             }
         }
+        .alert-success {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
+            animation: fadeIn 0.5s;
+        }
     </style>
 </head>
 <body>
+<div th:if="${successMessage}" class="alert-success" id="alertSuccess">
+    <p th:text="${successMessage}"></p>
+</div>
 <div class="top-bar">Miễn phí vận chuyển cho đơn hàng trên 500.000đ | Mã: FREESHIP</div>
 
 <header class="header">
@@ -677,7 +693,7 @@
                         <div class="quantity-control">
                             <button class="qty-btn" onclick="decreaseQty()">-</button>
                             <input type="number" class="qty-input" value="1" min="1" th:max="${product.currentQuantity}"
-                                   th:disabled="${product.currentQuantity == 0}" id="quantity">
+                                   th:disabled="${product.currentQuantity == 0}" id="quantity" name="quantity">
                             <button class="qty-btn" onclick="increaseQty()"
                                     th:disabled="${product.currentQuantity == 0}">+
                             </button>
@@ -693,13 +709,9 @@
             <div class="product-actions">
                 <form th:action="@{/add-to-cart}" method="post">
                     <input type="hidden" name="id" th:value="${product.id}">
+                    <input type="hidden" name="quantity" id="quantityHidden" value="1">
 
-                    <!-- Input số lượng có name="quantity" -->
-                    <input type="number" class="qty-input" name="quantity" value="1" min="1"
-                           th:max="${product.currentQuantity}"
-                           th:disabled="${product.currentQuantity == 0}" id="quantity">
-
-                    <button type="submit" class="btn-primary"
+                    <button type="submit" class="btn-primary" onclick="syncQty()"
                             th:disabled="${product.currentQuantity == 0}">
                         <span th:text="${product.currentQuantity == 0 ? '❌ Hết hàng' : '🛒 Thêm vào giỏ hàng'}"></span>
                     </button>
@@ -840,12 +852,29 @@
         }
     }
 
+    function syncQty() {
+        document.getElementById('quantityHidden').value = document.getElementById('quantity').value;
+    }
+
     function openTab(tabId, event) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
     }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const alertBox = document.getElementById("alertSuccess");
+        if (alertBox) {
+        setTimeout(() => {
+        alertBox.style.transition = "opacity 0.5s ease";
+        alertBox.style.opacity = "0";
+        setTimeout(() => alertBox.remove(), 500);
+    }, 2000); // tự ẩn sau 2.5 giây
+    }
+    });
+</script>
+
 </script>
 </body>
 </html>

@@ -11,6 +11,7 @@ import org.example.library.service.ShoppingCartService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.security.Principal;
@@ -48,7 +49,8 @@ public class CartController {
     public String addToCart(@RequestParam("id") Long productId,
                             @RequestParam(value = "quantity", defaultValue = "1") int quantity,
                             Principal principal,
-                            @RequestHeader(value = "Referer", required = false) String referer) {
+                            @RequestHeader(value = "Referer", required = false) String referer,
+     RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -58,6 +60,8 @@ public class CartController {
         Product product = productService.getProductById(productId);
 
         cartService.addItemToCart(product, quantity, customer);
+
+        redirectAttributes.addFlashAttribute("successMessage", " Thêm sản phẩm vào giỏ hàng thành công!!");
 
         return "redirect:" + (referer != null ? referer : "/cart");
     }

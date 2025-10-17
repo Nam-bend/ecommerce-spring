@@ -628,12 +628,15 @@
                         <a th:href="@{/order-detail/{id}(id=${order.id})}" class="btn btn-secondary">
                             Xem chi tiết
                         </a>
-                        <a th:href="@{/cancel-order/{id}(id=${order.id})}"
-                           class="btn btn-danger"
-                           th:if="${order.status != 'Cancelled'}"
-                           onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
-                            Hủy đơn
-                        </a>
+                        <form th:action="@{/cancel-order/{id}(id=${order.id})}"
+                              method="post"
+                              th:if="${order.status != 'Cancelled'}"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này? 😢')"
+                              style="display:inline;">
+                            <!-- Nếu bạn bật Spring Security, thêm dòng này -->
+<!--                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+                            <button type="submit" class="btn btn-danger">Hủy đơn</button>
+                        </form>
                     </div>
                 </div>
             </div>
